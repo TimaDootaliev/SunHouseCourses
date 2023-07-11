@@ -1,16 +1,25 @@
-from rest_framework import filters, permissions, status
+from rest_framework import filters
+from rest_framework import permissions
+from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
+from rest_framework.mixins import DestroyModelMixin
+from rest_framework.mixins import UpdateModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 
-from permissions.course_permissions import (IsCourseOwner,
-                                            IsRelatedCourseOwner, IsTeacher)
-
-from .models import Addition, Course, CourseCategory, ProgramModule
-from .serializers import (AdditionsSerializer, CourseCategorySerializer,
-                          CourseSerializer, ProgramModulesSerializer)
+from .models import Addition
+from .models import Course
+from .models import CourseCategory
+from .models import ProgramModule
+from .serializers import AdditionsSerializer
+from .serializers import CourseCategorySerializer
+from .serializers import CourseSerializer
+from .serializers import ProgramModulesSerializer
+from permissions.course_permissions import IsCourseOwner
+from permissions.course_permissions import IsRelatedCourseOwner
+from permissions.course_permissions import IsTeacher
 
 
 class UpdateDestroyView(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
@@ -66,6 +75,8 @@ class CourseViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action in ("add_addition", "add_programm_module"):
             self.permission_classes = [permissions.IsAuthenticated, IsCourseOwner]
+        elif self.action == 'enroll':
+            self.permission_classes = [permissions.IsAuthenticated]
         elif self.request.method == "POST":
             self.permission_classes = [permissions.IsAuthenticated, IsTeacher]
         else:

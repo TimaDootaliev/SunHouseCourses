@@ -20,7 +20,13 @@ class ProgramModulesSerializer(serializers.ModelSerializer):
 class CourseListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         representation = super().to_representation(data)
-        return representation
+        return [{
+            'id': course['id'],
+            'image': course['image'],
+            'author': course['author'],
+            'title': course['title'],
+            'category': course['category']
+        } for course in representation]
 
 
 class CourseSerializer(serializers.ModelSerializer):
